@@ -71,6 +71,35 @@ canvas{display:block;position:fixed;top:0;left:0;width:100%;height:100%;}
 .abtn .ai{font-size:18px;margin-bottom:1px;}
 .abtn:active{background:rgba(217,169,60,.3);}
 
+/* CROP SELECTOR (appears above toolbar when Seed tool is active) */
+#cropBar{position:fixed;bottom:150px;right:14px;display:none;gap:6px;z-index:30;flex-direction:row-reverse;}
+.cbtn{width:46px;height:46px;border-radius:10px;background:rgba(10,22,12,.9);border:2px solid rgba(217,169,60,.3);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:18px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.cbtn.active{background:rgba(74,138,58,.4);border-color:#7ed957;}
+.cbtn .ck{font-size:7px;color:var(--gold);margin-top:1px;}
+
+/* SHOP BUTTON */
+#shopBtn{position:fixed;top:44px;right:8px;z-index:22;background:var(--panel);border:1px solid rgba(217,169,60,.4);border-radius:8px;padding:6px 10px;font-size:16px;cursor:pointer;-webkit-tap-highlight-color:transparent;text-align:center;}
+#shopBtn .sl{font-size:7px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);display:block;margin-top:1px;}
+
+/* SHOP PANEL */
+#shopPanel{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(10,20,12,.94);z-index:55;}
+.shopBox{background:rgba(16,28,18,.98);border:1px solid var(--gold);border-radius:14px;padding:20px 18px;max-width:380px;width:92vw;max-height:82vh;overflow-y:auto;}
+.shopBox h2{font-family:'Cinzel',serif;color:var(--gold);font-size:18px;margin-bottom:4px;text-align:center;}
+.shopSub{font-size:11px;opacity:.7;text-align:center;margin-bottom:14px;}
+.upRow{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.04);border:1px solid rgba(217,169,60,.2);border-radius:10px;padding:10px;margin-bottom:8px;}
+.upIcon{font-size:24px;width:34px;text-align:center;flex-shrink:0;}
+.upInfo{flex:1;min-width:0;}
+.upName{font-size:13px;font-weight:600;}
+.upDesc{font-size:10px;opacity:.7;margin-top:2px;}
+.upLvl{font-size:10px;color:var(--gold);margin-top:3px;}
+.upBuy{flex-shrink:0;font-family:'Cinzel',serif;font-weight:700;font-size:11px;background:var(--gold);color:#0c1410;border:none;border-radius:8px;padding:9px 10px;cursor:pointer;min-width:64px;}
+.upBuy:disabled{background:#444;color:#888;cursor:default;}
+#shopCloseBtn{width:100%;margin-top:6px;font-family:'Cinzel',serif;font-weight:700;font-size:14px;background:transparent;color:var(--ivory);border:1px solid rgba(217,169,60,.4);border-radius:10px;padding:11px;cursor:pointer;}
+
+/* SAVE TOAST */
+#saveToast{position:fixed;bottom:190px;left:50%;transform:translateX(-50%);background:rgba(10,22,12,.9);border:1px solid rgba(217,169,60,.5);border-radius:20px;padding:5px 14px;font-size:10px;color:var(--gold);z-index:40;opacity:0;transition:opacity .4s;pointer-events:none;}
+#saveToast.show{opacity:1;}
+
 /* START SCREEN */
 #startScreen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(10,20,12,.97);z-index:50;}
 .sbox{background:rgba(16,28,18,.98);border:1px solid var(--gold);border-radius:14px;padding:24px 22px;max-width:360px;width:92vw;}
@@ -113,6 +142,21 @@ canvas{display:block;position:fixed;top:0;left:0;width:100%;height:100%;}
 </div>
 
 <div id="prompt"></div>
+<div id="saveToast">💾 Saved</div>
+
+<div id="shopBtn">🛒<span class="sl">Shop</span></div>
+
+<div id="shopPanel">
+  <div class="shopBox">
+    <h2>🛒 Farm Shop</h2>
+    <div class="shopSub">Spend your ₹ on permanent upgrades</div>
+    <div id="upgradeList"></div>
+    <button id="shopCloseBtn">Close</button>
+  </div>
+</div>
+
+<!-- CROP SELECTOR (shows when Seed tool active) -->
+<div id="cropBar"></div>
 
 <!-- TOOL BUTTONS -->
 <div id="toolBar">
@@ -154,6 +198,9 @@ canvas{display:block;position:fixed;top:0;left:0;width:100%;height:100%;}
     <div class="step"><div class="num">7</div><span>Visit the <strong>🐔 Poultry Yard</strong> — tap Hand to collect eggs, tap Seed to feed the chickens (Kannan also collects eggs and Anitha feeds them automatically)</span></div>
     <div class="step"><div class="num">8</div><span>Visit the <strong>🎣 Fishery</strong> by the pond — tap Hand to catch fish, tap Seed to feed them (Arun also catches fish and Bala feeds them automatically)</span></div>
     <div class="step"><div class="num">9</div><span>Your <strong>named farmhands</strong> work the crops, poultry, and fishery alongside you — Karthik tills, Velu plants, Muthu waters, Selvam fertilizes, and Raman harvests, one plot at a time. Water, fertilizer, and seeds are unlimited!</span></div>
+    <div class="step"><div class="num">10</div><span>Select <strong>🌱 Seed</strong> to reveal a crop picker — choose Tomato, Corn, or Chili before planting. Each has a different grow time and payout.</span></div>
+    <div class="step"><div class="num">11</div><span>Visit the <strong>🛒 Shop</strong> (top-right) to spend money on permanent upgrades: faster tractor/harvester, bigger harvest yields, and better market prices.</span></div>
+    <div class="step"><div class="num">12</div><span>Your progress <strong>autosaves</strong> — close the tab and pick up right where you left off.</span></div>
     <button id="playBtn">🌱 Start Farming!</button>
     <p style="font-size:8px;opacity:.5;margin-top:10px;line-height:1.4;">Tractor 3D model: "Tractor 01" by gogiart (Sketchfab), CC-BY-4.0</p>
   </div>
@@ -169,7 +216,24 @@ canvas{display:block;position:fixed;top:0;left:0;width:100%;height:100%;}
 const GW=8,GH=6,TS=1.95;
 const STAGE_NAMES=['🌱 Seed','🌿 Sprout','🌾 Vegetative','🌸 Flowering','🍅 Ripe!'];
 const STAGE_DUR=[8,12,14,12];
-const SEED_COST=8,WC=5,FC=6,HARV_GAIN=45,SEED_HARVEST_GAIN=3;
+const WC=5,FC=6;
+
+// ── CROP VARIETY ──────────────────
+// Each crop has its own cost/payout/grow-speed tradeoff and its own fruit/flower colors.
+const CROP_TYPES=[
+  {id:'tomato',name:'Tomato',emoji:'🍅',seedCost:8, harvestGain:45,seedGain:3,durMult:1.0, stem:0x5a8a30,leaf:0x4a9a38,flower:0xf7e23a,fruit:0xcc2211},
+  {id:'corn',  name:'Corn',  emoji:'🌽',seedCost:13,harvestGain:72,seedGain:2,durMult:1.45,stem:0x6a9a3a,leaf:0x5aa848,flower:0xd8c060,fruit:0xe8c93a},
+  {id:'chili', name:'Chili', emoji:'🌶️',seedCost:5, harvestGain:26,seedGain:4,durMult:0.7, stem:0x4a7a2a,leaf:0x3a8a30,flower:0xf0e030,fruit:0xd42a1a},
+];
+let selectedCrop=0; // index into CROP_TYPES — used when the player plants
+
+// ── UPGRADES (bought in the shop, persisted) ──
+const UPGRADE_DEFS={
+  tractorSpd:{name:'Tractor & Harvester Speed',emoji:'🚜',baseCost:150,costMult:1.55,max:5,desc:'+15% vehicle speed / lvl'},
+  harvestYield:{name:'Harvest Yield',emoji:'🌾',baseCost:200,costMult:1.6, max:5,desc:'+10% harvest payout / lvl'},
+  marketBonus:{name:'Market Deal',emoji:'💰',baseCost:260,costMult:1.65,max:5,desc:'+8% sell price everywhere / lvl'},
+};
+let upgrades={tractorSpd:0,harvestYield:0,marketBonus:0};
 
 let money=500,day=1,harvKg=0;
 let rWater=Infinity,rFert=Infinity,rSeeds=Infinity;
@@ -177,6 +241,7 @@ let currentTool='hand';
 let gameOn=false;
 let plots=[];
 let dayTimer=0;
+const DAY_LEN=90; // seconds per in-game day, also used for the day/night cycle
 
 // Poultry farm
 const POULTRY_X=-11,POULTRY_Z=9,POULTRY_R=3.2,MAX_EGGS=5,EGG_GAIN=14;
@@ -200,6 +265,7 @@ let playerAngle=0;
 let tractorObj,harvesterObj;
 let tractorAngle=Math.PI,harvesterAngle=Math.PI;
 let inVehicle=null;
+let sunLight,ambLight,hemiLight; // hoisted so updateDayNight() can animate them
 
 // Joystick
 let joyActive=false,joyId=-1;
@@ -211,7 +277,7 @@ const joyR=65; // radius
 // 360° free-look camera (drag anywhere outside controls to orbit)
 let camYaw=0,camPitch=0.685,camDragId=-1,camLastX=0,camLastY=0,camMouseDown=false;
 const CAM_MIN_PITCH=0.15,CAM_MAX_PITCH=1.45,CAM_DIST=13.5;
-const CAM_NO_DRAG_IDS=['joyZone','toolBar','actionBar','topHud','ttl','plotBox','resBox','startScreen'];
+const CAM_NO_DRAG_IDS=['joyZone','toolBar','actionBar','topHud','ttl','plotBox','resBox','startScreen','shopBtn','shopPanel','cropBar','saveToast'];
 
 // DOM
 const hMoney=document.getElementById('hMoney');
@@ -226,6 +292,62 @@ const bW=document.getElementById('bW');
 const bF=document.getElementById('bF');
 const bG=document.getElementById('bG');
 const promptEl=document.getElementById('prompt');
+const shopBtn=document.getElementById('shopBtn');
+const shopPanel=document.getElementById('shopPanel');
+const upgradeList=document.getElementById('upgradeList');
+const shopCloseBtn=document.getElementById('shopCloseBtn');
+const cropBar=document.getElementById('cropBar');
+const saveToast=document.getElementById('saveToast');
+
+// vehicle speeds — base values, scaled up by the tractorSpd upgrade
+let tractorSpeedCur=3.5, harvesterSpeedCur=2.8;
+function applyUpgrades(){
+  const mult=1+0.15*upgrades.tractorSpd;
+  tractorSpeedCur=3.5*mult; harvesterSpeedCur=2.8*mult;
+}
+
+// ── SOUND (synthesized — no audio files needed) ──
+let audioCtx=null,engineOsc=null,engineGain=null;
+function ensureAudio(){
+  if(!audioCtx){
+    try{audioCtx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){return;}
+  }
+  if(audioCtx&&audioCtx.state==='suspended') audioCtx.resume();
+}
+function playTone(freq,dur,type,vol,glideTo){
+  if(!audioCtx) return;
+  const t0=audioCtx.currentTime;
+  const osc=audioCtx.createOscillator(),gain=audioCtx.createGain();
+  osc.type=type||'sine';osc.frequency.setValueAtTime(freq,t0);
+  if(glideTo) osc.frequency.exponentialRampToValueAtTime(glideTo,t0+dur);
+  gain.gain.setValueAtTime(vol,t0);
+  gain.gain.exponentialRampToValueAtTime(0.001,t0+dur);
+  osc.connect(gain);gain.connect(audioCtx.destination);
+  osc.start(t0);osc.stop(t0+dur);
+}
+function sfx(name){
+  if(!audioCtx) return;
+  switch(name){
+    case 'till':playTone(160,0.1,'square',0.07,220);break;
+    case 'plant':playTone(440,0.11,'triangle',0.11,680);break;
+    case 'water':playTone(320,0.16,'sine',0.09,190);break;
+    case 'fert':playTone(520,0.09,'square',0.05,760);break;
+    case 'harvest':playTone(240,0.16,'sine',0.14,520);setTimeout(()=>playTone(700,0.14,'sine',0.1,1000),80);break;
+    case 'coin':playTone(900,0.09,'square',0.07,1300);break;
+    case 'error':playTone(140,0.16,'sawtooth',0.08,90);break;
+    case 'buy':playTone(500,0.1,'triangle',0.1,900);setTimeout(()=>playTone(750,0.12,'triangle',0.1,1200),90);break;
+  }
+}
+function startEngine(){
+  ensureAudio();if(!audioCtx||engineOsc) return;
+  engineOsc=audioCtx.createOscillator();engineOsc.type='sawtooth';engineOsc.frequency.value=55;
+  engineGain=audioCtx.createGain();engineGain.gain.value=0.035;
+  engineOsc.connect(engineGain);engineGain.connect(audioCtx.destination);
+  engineOsc.start();
+}
+function stopEngine(){
+  if(engineOsc){try{engineOsc.stop();}catch(e){}engineOsc.disconnect();engineGain.disconnect();engineOsc=null;engineGain=null;}
+}
 
 // ── INIT ──────────────────────────
 function init(){
@@ -245,7 +367,8 @@ function init(){
   renderer.outputEncoding=THREE.sRGBEncoding; // needed so the tractor's photo textures render at correct brightness
   document.body.insertBefore(renderer.domElement,document.body.firstChild);
 
-  scene.add(new THREE.AmbientLight(0xffeedd,1.0));
+  const amb=new THREE.AmbientLight(0xffeedd,1.0);
+  scene.add(amb);
   const sun=new THREE.DirectionalLight(0xfff8cc,1.1);
   sun.position.set(14,22,10);
   sun.castShadow=true;
@@ -253,7 +376,9 @@ function init(){
   sun.shadow.camera.left=-28;sun.shadow.camera.right=28;
   sun.shadow.camera.top=28;sun.shadow.camera.bottom=-28;
   scene.add(sun);
-  scene.add(new THREE.HemisphereLight(0xb0d8f0,0x4a3a22,0.5));
+  const hemi=new THREE.HemisphereLight(0xb0d8f0,0x4a3a22,0.5);
+  scene.add(hemi);
+  ambLight=amb; sunLight=sun; hemiLight=hemi;
 
   clock=new THREE.Clock();
 
@@ -265,15 +390,25 @@ function init(){
   buildPoultryFarm();
   buildFishery();
   buildAssistants();
+  buildCropMaterials();
   setupJoystick();
   setupButtons();
   setupCameraDrag();
+  setupShop();
+  setupCropBar();
+  applyUpgrades();
+  loadGame();
+  updateDayNight();
+  updateUI();
 
   window.addEventListener('resize',()=>{
     camera.aspect=innerWidth/innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(innerWidth,innerHeight);
   });
+
+  setInterval(()=>{ if(gameOn) saveGame(true); },12000);
+  window.addEventListener('beforeunload',()=>{ if(gameOn) saveGame(false); });
 
   setTimeout(()=>{
     const l=document.getElementById('loading');
@@ -425,7 +560,7 @@ function buildField(){
       ridge.position.set(0,0.215,(r-1.5)*(TS-0.2)/3);fg.add(ridge);
     }
     fg.visible=false;g.add(fg);scene.add(g);
-    plots.push({gx,gz,x,z,group:g,baseMesh:base,furrowG:fg,state:'soil',stage:0,stageP:0,soilWater:0,nutrients:0,cropGroup:null,claimedBy:null});
+    plots.push({gx,gz,x,z,group:g,baseMesh:base,furrowG:fg,state:'soil',stage:0,stageP:0,soilWater:0,nutrients:0,cropGroup:null,claimedBy:null,cropType:0});
   }
 }
 
@@ -436,16 +571,32 @@ function setPlotLook(p){
   p.furrowG.visible=(p.state!=='soil');
 }
 
+// ── CROP MATERIALS (built once per crop type, reused forever — avoids
+//    allocating 5 fresh materials every time a plant's growth stage advances) ──
+let cropMats=[];
+function buildCropMaterials(){
+  cropMats=CROP_TYPES.map(c=>({
+    stem:new THREE.MeshStandardMaterial({color:c.stem,roughness:0.7}),
+    leaf:new THREE.MeshStandardMaterial({color:c.leaf,roughness:0.7,side:THREE.DoubleSide}),
+    flower:new THREE.MeshStandardMaterial({color:c.flower,roughness:0.4}),
+    fruitSm:new THREE.MeshStandardMaterial({color:c.fruit,roughness:0.4}),
+    fruit:new THREE.MeshStandardMaterial({color:c.fruit,roughness:0.3,metalness:0.1}),
+  }));
+}
+
+// Only geometries are per-instance (their dimensions depend on growth progress),
+// so only geometries need disposing — materials are shared/cached and must NOT be disposed.
+function disposeGeometries(obj){
+  obj.traverse(o=>{ if(o.isMesh&&o.geometry) o.geometry.dispose(); });
+}
+
 function rebuildCrop(p){
-  if(p.cropGroup){p.group.remove(p.cropGroup);p.cropGroup=null;}
+  if(p.cropGroup){disposeGeometries(p.cropGroup);p.group.remove(p.cropGroup);p.cropGroup=null;}
   if(p.state!=='growing'&&p.state!=='ready') return;
   const g=new THREE.Group();
   const s=p.stage,sp=p.stageP;
-  const sM=new THREE.MeshStandardMaterial({color:0x5a8a30,roughness:0.7});
-  const lM=new THREE.MeshStandardMaterial({color:0x4a9a38,roughness:0.7,side:THREE.DoubleSide});
-  const fwM=new THREE.MeshStandardMaterial({color:0xf7e23a,roughness:0.4});
-  const fcM=new THREE.MeshStandardMaterial({color:0xe84a2a,roughness:0.4});
-  const frM=new THREE.MeshStandardMaterial({color:0xcc2211,roughness:0.3,metalness:0.1});
+  const cm=cropMats[p.cropType||0];
+  const sM=cm.stem,lM=cm.leaf,fwM=cm.flower,fcM=cm.fruitSm,frM=cm.fruit;
 
   if(s===0){
     const b=new THREE.Mesh(new THREE.SphereGeometry(0.04+0.04*sp,6,6),sM);b.position.y=0.22;g.add(b);
@@ -674,8 +825,8 @@ function collectEgg(){
   if(eggs.length===0) return false;
   const e=eggs.shift();
   scene.remove(e.mesh);
-  money+=EGG_GAIN;harvKg+=0.2;
-  updateUI();
+  money+=Math.round(EGG_GAIN*(1+0.08*upgrades.marketBonus));harvKg+=0.2;
+  updateUI();sfx('coin');
   return true;
 }
 
@@ -683,7 +834,7 @@ function feedChickens(){
   if(rSeeds<=0) return false;
   rSeeds--;
   fedBoost=30;
-  updateUI();
+  updateUI();sfx('fert');
   return true;
 }
 
@@ -776,8 +927,8 @@ function catchFish(){
   if(catches.length===0) return false;
   const c=catches.shift();
   scene.remove(c.mesh);
-  money+=FISH_GAIN;harvKg+=0.3;
-  updateUI();
+  money+=Math.round(FISH_GAIN*(1+0.08*upgrades.marketBonus));harvKg+=0.3;
+  updateUI();sfx('coin');
   return true;
 }
 
@@ -785,7 +936,7 @@ function feedFish(){
   if(rSeeds<=0) return false;
   rSeeds--;
   fishFedBoost=30;
-  updateUI();
+  updateUI();sfx('fert');
   return true;
 }
 
@@ -908,9 +1059,10 @@ function performWorkerAction(u){
   if(u.job==='till'){
     if(p.state==='soil'){p.state='tilled';setPlotLook(p);}
   } else if(u.job==='seed'){
-    if(p.state==='tilled'&&rSeeds>0&&money>=SEED_COST){
-      rSeeds--;money-=SEED_COST;
-      p.state='growing';p.stage=0;p.stageP=0;p.soilWater=55;p.nutrients=55;
+    const crop=CROP_TYPES[selectedCrop];
+    if(p.state==='tilled'&&rSeeds>0&&money>=crop.seedCost){
+      rSeeds--;money-=crop.seedCost;
+      p.state='growing';p.stage=0;p.stageP=0;p.soilWater=55;p.nutrients=55;p.cropType=selectedCrop;
       rebuildCrop(p);setPlotLook(p);updateUI();
     }
   } else if(u.job==='water'){
@@ -1140,6 +1292,7 @@ const kdir={w:false,a:false,s:false,d:false};
 function setTool(t){
   currentTool=t;
   document.querySelectorAll('.tbtn').forEach(el=>el.classList.toggle('active',el.dataset.t===t));
+  cropBar.style.display=(t==='seed')?'flex':'none';
 }
 
 // One-tap control: selecting Seed/Water/Fert/Hand immediately
@@ -1157,6 +1310,116 @@ function flashTool(t,ok){
   void el.offsetWidth; // restart animation
   el.classList.add(ok?'flash-ok':'flash-bad');
   setTimeout(()=>el.classList.remove('flash-ok','flash-bad'),320);
+}
+
+// ── CROP SELECTOR BAR ──────────────
+function setupCropBar(){
+  cropBar.innerHTML='';
+  CROP_TYPES.forEach((c,i)=>{
+    const el=document.createElement('div');
+    el.className='cbtn'+(i===selectedCrop?' active':'');
+    el.dataset.i=i;
+    el.innerHTML=c.emoji+'<span class="ck">₹'+c.seedCost+'</span>';
+    el.addEventListener('click',()=>selectCrop(i));
+    el.addEventListener('touchstart',e=>{e.preventDefault();selectCrop(i);},{passive:false});
+    cropBar.appendChild(el);
+  });
+}
+function selectCrop(i){
+  selectedCrop=i;
+  cropBar.querySelectorAll('.cbtn').forEach(el=>el.classList.toggle('active',Number(el.dataset.i)===i));
+}
+
+// ── SHOP ────────────────────────────
+function setupShop(){
+  shopBtn.addEventListener('click',openShop);
+  shopBtn.addEventListener('touchstart',e=>{e.preventDefault();openShop();},{passive:false});
+  shopCloseBtn.addEventListener('click',closeShop);
+  shopCloseBtn.addEventListener('touchstart',e=>{e.preventDefault();closeShop();},{passive:false});
+}
+function upgradeCost(key){
+  const d=UPGRADE_DEFS[key];
+  return Math.round(d.baseCost*Math.pow(d.costMult,upgrades[key]));
+}
+function openShop(){
+  renderShop();
+  shopPanel.style.display='flex';
+}
+function closeShop(){ shopPanel.style.display='none'; }
+function renderShop(){
+  upgradeList.innerHTML='';
+  Object.keys(UPGRADE_DEFS).forEach(key=>{
+    const d=UPGRADE_DEFS[key];
+    const lvl=upgrades[key];
+    const maxed=lvl>=d.max;
+    const cost=upgradeCost(key);
+    const row=document.createElement('div');
+    row.className='upRow';
+    row.innerHTML=`
+      <div class="upIcon">${d.emoji}</div>
+      <div class="upInfo">
+        <div class="upName">${d.name}</div>
+        <div class="upDesc">${d.desc}</div>
+        <div class="upLvl">Level ${lvl} / ${d.max}</div>
+      </div>
+      <button class="upBuy" ${maxed?'disabled':''}>${maxed?'MAX':'₹'+cost}</button>`;
+    const btn=row.querySelector('.upBuy');
+    if(!maxed){
+      btn.addEventListener('click',()=>buyUpgrade(key));
+      btn.addEventListener('touchstart',e=>{e.preventDefault();buyUpgrade(key);},{passive:false});
+    }
+    upgradeList.appendChild(row);
+  });
+}
+function buyUpgrade(key){
+  const cost=upgradeCost(key);
+  if(upgrades[key]>=UPGRADE_DEFS[key].max||money<cost) { sfx('error'); return; }
+  money-=cost;upgrades[key]++;
+  applyUpgrades();updateUI();renderShop();sfx('buy');saveGame(true);
+}
+
+// ── SAVE / LOAD (localStorage) ──────
+const SAVE_KEY='uzhavanFarmSave_v1';
+function saveGame(silent){
+  try{
+    const data={
+      money,day,harvKg,upgrades,selectedCrop,
+      plots:plots.map(p=>({gx:p.gx,gz:p.gz,state:p.state,stage:p.stage,stageP:p.stageP,soilWater:p.soilWater,nutrients:p.nutrients,cropType:p.cropType})),
+      savedAt:Date.now()
+    };
+    localStorage.setItem(SAVE_KEY,JSON.stringify(data));
+    showSaveToast();
+  }catch(e){ /* localStorage may be unavailable (e.g. private mode) — fail silently */ }
+}
+function loadGame(){
+  let raw;
+  try{ raw=localStorage.getItem(SAVE_KEY); }catch(e){ return; }
+  if(!raw) return;
+  try{
+    const data=JSON.parse(raw);
+    if(typeof data.money==='number') money=data.money;
+    if(typeof data.day==='number') day=data.day;
+    if(typeof data.harvKg==='number') harvKg=data.harvKg;
+    if(data.upgrades) upgrades=Object.assign({tractorSpd:0,harvestYield:0,marketBonus:0},data.upgrades);
+    if(typeof data.selectedCrop==='number') selectedCrop=data.selectedCrop;
+    if(Array.isArray(data.plots)){
+      data.plots.forEach(sp=>{
+        const p=plots.find(pl=>pl.gx===sp.gx&&pl.gz===sp.gz);
+        if(!p) return;
+        p.state=sp.state;p.stage=sp.stage;p.stageP=sp.stageP;
+        p.soilWater=sp.soilWater;p.nutrients=sp.nutrients;p.cropType=sp.cropType||0;
+        rebuildCrop(p);setPlotLook(p);
+      });
+    }
+    applyUpgrades();
+    setupCropBar();
+  }catch(e){ /* corrupt save — ignore and start fresh */ }
+}
+let toastTimer=null;
+function showSaveToast(){
+  saveToast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>saveToast.classList.remove('show'),1400);
 }
 
 // ── ACTIONS ───────────────────────
@@ -1182,35 +1445,41 @@ function doAction(){
   const p=nearPlot(px,pz,1.4);
   if(!p) return false;
   let ok=false;
+  const crop=CROP_TYPES[selectedCrop];
   if(currentTool==='hand'){
-    if(p.state==='soil'){p.state='tilled';setPlotLook(p);ok=true;}
+    if(p.state==='soil'){p.state='tilled';setPlotLook(p);ok=true;sfx('till');}
     else if(p.state==='ready'){doHarvest(p);ok=true;}
   } else if(currentTool==='seed'){
-    if(p.state==='tilled'&&rSeeds>0&&money>=SEED_COST){
-      rSeeds--;money-=SEED_COST;
-      p.state='growing';p.stage=0;p.stageP=0;p.soilWater=55;p.nutrients=55;
-      rebuildCrop(p);setPlotLook(p);updateUI();ok=true;
+    if(p.state==='tilled'&&rSeeds>0&&money>=crop.seedCost){
+      rSeeds--;money-=crop.seedCost;
+      p.state='growing';p.stage=0;p.stageP=0;p.soilWater=55;p.nutrients=55;p.cropType=selectedCrop;
+      rebuildCrop(p);setPlotLook(p);updateUI();ok=true;sfx('plant');
     } else if(p.state==='ready'){
       doHarvestSeeds(p);ok=true;
     }
   } else if(currentTool==='water'){
-    if(p.state==='growing'&&rWater>=WC){rWater-=WC;p.soilWater=Math.min(100,p.soilWater+38);updateUI();ok=true;}
+    if(p.state==='growing'&&rWater>=WC){rWater-=WC;p.soilWater=Math.min(100,p.soilWater+38);updateUI();ok=true;sfx('water');}
   } else if(currentTool==='fert'){
-    if(p.state==='growing'&&rFert>=FC){rFert-=FC;p.nutrients=Math.min(100,p.nutrients+38);updateUI();ok=true;}
+    if(p.state==='growing'&&rFert>=FC){rFert-=FC;p.nutrients=Math.min(100,p.nutrients+38);updateUI();ok=true;sfx('fert');}
   }
+  if(!ok) sfx('error');
   return ok;
 }
 
 function doHarvest(p){
-  harvKg+=4;money+=HARV_GAIN;
+  const crop=CROP_TYPES[p.cropType||0];
+  const marketMult=1+0.08*upgrades.marketBonus;
+  const yieldMult=1+0.10*upgrades.harvestYield;
+  harvKg+=4;money+=Math.round(crop.harvestGain*yieldMult*marketMult);
   p.state='soil';p.stage=0;p.stageP=0;p.soilWater=0;p.nutrients=0;
-  rebuildCrop(p);setPlotLook(p);updateUI();
+  rebuildCrop(p);setPlotLook(p);updateUI();sfx('harvest');saveGame(true);
 }
 
 function doHarvestSeeds(p){
-  rSeeds+=SEED_HARVEST_GAIN;
+  const crop=CROP_TYPES[p.cropType||0];
+  rSeeds+=crop.seedGain;
   p.state='soil';p.stage=0;p.stageP=0;p.soilWater=0;p.nutrients=0;
-  rebuildCrop(p);setPlotLook(p);updateUI();
+  rebuildCrop(p);setPlotLook(p);updateUI();sfx('plant');
 }
 
 function toggleVehicle(type){
@@ -1218,17 +1487,18 @@ function toggleVehicle(type){
   if(inVehicle===type){
     playerObj.position.copy(veh.position);
     playerObj.position.x+=1.6;
-    playerObj.visible=true;inVehicle=null;return;
+    playerObj.visible=true;inVehicle=null;stopEngine();return;
   }
   if(inVehicle) return;
   const d=Math.hypot(veh.position.x-playerObj.position.x,veh.position.z-playerObj.position.z);
-  if(d<3.0){inVehicle=type;playerObj.visible=false;}
+  if(d<3.0){inVehicle=type;playerObj.visible=false;startEngine();}
 }
 
 // ── GROWTH ────────────────────────
 function updateGrowth(dt){
   dayTimer+=dt;
-  if(dayTimer>90){
+  updateDayNight();
+  if(dayTimer>DAY_LEN){
     dayTimer=0;day++;
     updateUI();
   }
@@ -1239,7 +1509,8 @@ function updateGrowth(dt){
     const gw=p.soilWater>15&&p.soilWater<92;
     const gn=p.nutrients>15&&p.nutrients<92;
     let rate=gw&&gn?1.0:(p.soilWater<8||p.nutrients<8?-0.2:0.35);
-    const needed=STAGE_DUR[p.stage]||999;
+    const durMult=CROP_TYPES[p.cropType||0].durMult;
+    const needed=(STAGE_DUR[p.stage]||999)*durMult;
     p.stageP+=rate*dt/needed;
     if(p.stageP<0)p.stageP=0;
     if(p.stageP>=1){
@@ -1249,6 +1520,25 @@ function updateGrowth(dt){
     } else if(Math.random()<0.012) rebuildCrop(p);
     setPlotLook(p);
   });
+}
+
+// ── DAY / NIGHT CYCLE ─────────────
+const SKY_DAY=new THREE.Color(0x87ceeb), SKY_NIGHT=new THREE.Color(0x0a1030);
+const FOG_DAY=new THREE.Color(0x87ceeb), FOG_NIGHT=new THREE.Color(0x0a1030);
+const SUN_DAY=new THREE.Color(0xfff8cc), SUN_DUSK=new THREE.Color(0xff9955);
+function updateDayNight(){
+  if(!sunLight) return;
+  const t=(dayTimer/DAY_LEN)%1; // 0..1 across one in-game day
+  // brightness peaks at "noon" (t=0.3) and dips to full dark at "midnight" (t=0.8)
+  const bright=Math.max(0,Math.sin((t-0.05)*Math.PI/0.75));
+  scene.background.copy(SKY_NIGHT).lerp(SKY_DAY,bright);
+  scene.fog.color.copy(FOG_NIGHT).lerp(FOG_DAY,bright);
+  sunLight.intensity=0.12+1.05*bright;
+  sunLight.color.copy(SUN_DUSK).lerp(SUN_DAY,Math.min(1,bright*1.6));
+  ambLight.intensity=0.25+0.85*bright;
+  hemiLight.intensity=0.15+0.45*bright;
+  const ang=t*Math.PI*2;
+  sunLight.position.set(Math.cos(ang)*20,Math.max(4,Math.sin(ang)*22+8),Math.sin(ang)*10+6);
 }
 
 // ── MOVEMENT ──────────────────────
@@ -1264,7 +1554,7 @@ function updateMovement(dt){
     let fwV=-mz;
     if(inVehicle==='tractor') tractorAngle+=angV; else harvesterAngle+=angV;
     const ang=inVehicle==='tractor'?tractorAngle:harvesterAngle;
-    const spd=inVehicle==='tractor'?3.5:2.8;
+    const spd=inVehicle==='tractor'?tractorSpeedCur:harvesterSpeedCur;
     veh.position.x+=Math.sin(ang)*fwV*spd*dt;
     veh.position.z+=Math.cos(ang)*fwV*spd*dt;
     veh.rotation.y=ang;
@@ -1353,9 +1643,11 @@ function updatePromptAndPlot(){
     promptEl.textContent=currentTool==='hand'?fishMsg:currentTool==='seed'?feedMsg:'🎣 Fishery — Hand catches fish, Seed feeds them';
   }
   else if(p){
+    const selCrop=CROP_TYPES[selectedCrop];
+    const plotCrop=CROP_TYPES[p.cropType||0];
     const msgs={
-      hand:p.state==='soil'?'🖐 Tap Hand to till':p.state==='ready'?'🍅 Tap Hand to harvest for money!':'Wrong tool for this plot',
-      seed:p.state==='tilled'?`🌱 Tap Seed to plant (-₹${SEED_COST} -1🌱)`:p.state==='ready'?`🌱 Tap Seed to collect seeds (+${SEED_HARVEST_GAIN}🌱)`:'Needs tilled soil',
+      hand:p.state==='soil'?'🖐 Tap Hand to till':p.state==='ready'?'🖐 Tap Hand to harvest for money!':'Wrong tool for this plot',
+      seed:p.state==='tilled'?`🌱 Tap Seed to plant ${selCrop.emoji}${selCrop.name} (-₹${selCrop.seedCost} -1🌱)`:p.state==='ready'?`🌱 Tap Seed to collect seeds (+${plotCrop.seedGain}🌱)`:'Needs tilled soil',
       water:p.state==='growing'?`💧 Tap Water (-${WC}💧)`:'Needs a growing crop',
       fert:p.state==='growing'?`🧪 Tap Fert. (-${FC}🧪)`:'Needs a growing crop'
     };
@@ -1364,7 +1656,8 @@ function updatePromptAndPlot(){
 
   if(p){
     plotBox.style.display='block';
-    const names={soil:'Untilled Soil',tilled:'Tilled — Ready',growing:STAGE_NAMES[p.stage]||'Growing',ready:'🍅 RIPE — Hand=money, Seed=seeds!'};
+    const cropTag=(p.state==='growing'||p.state==='ready')?(' — '+CROP_TYPES[p.cropType||0].emoji+CROP_TYPES[p.cropType||0].name):'';
+    const names={soil:'Untilled Soil',tilled:'Tilled — Ready',growing:(STAGE_NAMES[p.stage]||'Growing')+cropTag,ready:'RIPE'+cropTag+' — Hand=money, Seed=seeds!'};
     plotName.textContent=names[p.state]||'—';
     bW.style.width=p.soilWater+'%';
     bF.style.width=p.nutrients+'%';
@@ -1390,6 +1683,7 @@ function animate(){
 
 document.getElementById('playBtn').addEventListener('click',()=>{
   document.getElementById('startScreen').classList.add('hidden');
+  ensureAudio();
   gameOn=true;updateUI();
 });
 
