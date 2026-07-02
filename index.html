@@ -155,10 +155,12 @@ canvas{display:block;position:fixed;top:0;left:0;width:100%;height:100%;}
     <div class="step"><div class="num">8</div><span>Visit the <strong>🎣 Fishery</strong> by the pond — tap Hand to catch fish, tap Seed to feed them (Arun also catches fish and Bala feeds them automatically)</span></div>
     <div class="step"><div class="num">9</div><span>Your <strong>named farmhands</strong> work the crops, poultry, and fishery alongside you — Karthik tills, Velu plants, Muthu waters, Selvam fertilizes, and Raman harvests, one plot at a time. Water, fertilizer, and seeds are unlimited!</span></div>
     <button id="playBtn">🌱 Start Farming!</button>
+    <p style="font-size:8px;opacity:.5;margin-top:10px;line-height:1.4;">Tractor 3D model: "Tractor 01" by gogiart (Sketchfab), CC-BY-4.0</p>
   </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 <script>
 // ═══════════════════════════════════════
 //   UZHAVAN FARM — MOBILE-FIRST 3D GAME
@@ -240,6 +242,7 @@ function init(){
   renderer.setPixelRatio(Math.min(devicePixelRatio,2));
   renderer.shadowMap.enabled=true;
   renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+  renderer.outputEncoding=THREE.sRGBEncoding; // needed so the tractor's photo textures render at correct brightness
   document.body.insertBefore(renderer.domElement,document.body.firstChild);
 
   scene.add(new THREE.AmbientLight(0xffeedd,1.0));
@@ -487,26 +490,52 @@ function buildPlayer(){
 }
 
 // ── TRACTOR ───────────────────────
+// Real 3D model: "Tractor 01" by gogiart (sketchfab.com), CC-BY-4.0.
+// Files expected at assets/tractor_01/scene.gltf (+ scene.bin + textures/).
+const TRACTOR_MODEL_URL='assets/tractor_01/scene.gltf';
+const TRACTOR_TARGET_LENGTH=2.1; // world units — matches the old box tractor's footprint
+// If the tractor drives in facing backwards once you see it in-game, change this to -Math.PI/2,
+// or add/subtract Math.PI, and reload. There was no way to preview the model's orientation
+// ahead of time, so this value is a best guess based on the model's proportions, not a render.
+const TRACTOR_YAW_OFFSET=Math.PI/2;
+
 function buildTractor(){
   const g=new THREE.Group();
-  const bM=new THREE.MeshStandardMaterial({color:0xcc2222,roughness:0.5,metalness:0.2});
-  const wM=new THREE.MeshStandardMaterial({color:0x1a1a1a,roughness:0.9});
-  const gM=new THREE.MeshStandardMaterial({color:0xaaddff,transparent:true,opacity:0.55});
-  const mM=new THREE.MeshStandardMaterial({color:0x888888,metalness:0.7,roughness:0.4});
-  // body
-  const body=new THREE.Mesh(new THREE.BoxGeometry(0.95,0.55,1.8),bM);body.position.y=0.58;body.castShadow=true;g.add(body);
-  const hood=new THREE.Mesh(new THREE.BoxGeometry(0.8,0.35,0.85),bM);hood.position.set(0,0.72,0.75);g.add(hood);
-  const cab=new THREE.Mesh(new THREE.BoxGeometry(0.78,0.6,0.72),gM);cab.position.set(0,1.0,-0.3);g.add(cab);
-  const pipe=new THREE.Mesh(new THREE.CylinderGeometry(0.04,0.04,0.6,8),mM);pipe.position.set(0.3,1.2,0.72);g.add(pipe);
-  // front wheels
-  [[-0.52,0.28,0.72],[0.52,0.28,0.72]].forEach(([x,y,z])=>{const w=new THREE.Mesh(new THREE.CylinderGeometry(0.28,0.28,0.18,16),wM);w.rotation.z=Math.PI/2;w.position.set(x,y,z);w.castShadow=true;g.add(w);});
-  // rear wheels
-  [[-0.56,0.42,-0.7],[0.56,0.42,-0.7]].forEach(([x,y,z])=>{const w=new THREE.Mesh(new THREE.CylinderGeometry(0.42,0.42,0.22,16),wM);w.rotation.z=Math.PI/2;w.position.set(x,y,z);w.castShadow=true;g.add(w);});
-  // tiller
-  const tiller=new THREE.Mesh(new THREE.BoxGeometry(1.1,0.13,0.2),mM);tiller.position.set(0,0.22,1.1);g.add(tiller);
-  for(let i=0;i<4;i++){const b=new THREE.Mesh(new THREE.BoxGeometry(0.04,0.18,0.08),mM);b.position.set(-0.38+i*0.25,0.1,1.1);g.add(b);}
   g.position.set(-(GW*TS/2+1.8),0,GH*TS/2+2.0);
-  g.rotation.y=tractorAngle;scene.add(g);tractorObj=g;
+  g.rotation.y=tractorAngle;
+  scene.add(g);
+  tractorObj=g;
+
+  // Lightweight placeholder — visible only until the real model finishes loading,
+  // so distance checks / mounting logic work correctly from frame 1.
+  const placeholder=new THREE.Mesh(
+    new THREE.BoxGeometry(0.95,0.9,1.9),
+    new THREE.MeshStandardMaterial({color:0xcc2222,roughness:0.5,metalness:0.2})
+  );
+  placeholder.position.y=0.45;placeholder.castShadow=true;
+  g.add(placeholder);
+
+  const loader=new THREE.GLTFLoader();
+  loader.load(TRACTOR_MODEL_URL,(gltf)=>{
+    const model=gltf.scene;
+    model.updateMatrixWorld(true);
+    const rawBox=new THREE.Box3().setFromObject(model);
+    const rawSize=new THREE.Vector3();rawBox.getSize(rawSize);
+    const scale=TRACTOR_TARGET_LENGTH/Math.max(rawSize.x,rawSize.z);
+    model.scale.setScalar(scale);
+    model.rotation.y=TRACTOR_YAW_OFFSET;
+    model.updateMatrixWorld(true);
+    const box2=new THREE.Box3().setFromObject(model);
+    const center2=new THREE.Vector3();box2.getCenter(center2);
+    model.position.x-=center2.x;
+    model.position.z-=center2.z;
+    model.position.y-=box2.min.y; // sit flush on the ground
+    model.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});
+    g.remove(placeholder);
+    g.add(model);
+  },undefined,(err)=>{
+    console.warn('Tractor model failed to load — keeping placeholder box.',err);
+  });
 }
 
 // ── HARVESTER ─────────────────────
